@@ -10,14 +10,25 @@ import {
     Select,
     TextField
 } from '@mui/material';
+import { update as updateCustomer, create as createCustomer } from '../services/CustomerService';
 
-const Customer = ({ open, setOpen, row, addresses }) => {
-    const handleClose = () => {
-        setOpen(false);
-    }
+const Customer = ({ open, setOpen, row, addresses, forceUpdate }) => {
     const [firstName, setFirstName] = useState(row?.firstName);
     const [lastName, setLastName] = useState(row?.lastName);
     const [addressId, setAddressId] = useState(row?.addressId);
+    const handleOk = () => {
+        setOpen(false);
+        if (row?.id) {
+            updateCustomer(row.id, firstName, lastName, addressId)
+            forceUpdate();
+        } else {
+            createCustomer(firstName, lastName, addressId)
+            forceUpdate();
+        }
+    }
+    const handleClose = () => {
+        setOpen(false);
+    }
 
     useEffect(() => {
         if (row) {
@@ -65,7 +76,6 @@ const Customer = ({ open, setOpen, row, addresses }) => {
                     label="Address"
                     onChange={(e) => setAddressId(e.target.value)}
                 >
-                    {console.log(addresses)}
                     {
                         addresses.map((address) => (
                             <MenuItem key={address.id} value={address.id}>
@@ -77,7 +87,7 @@ const Customer = ({ open, setOpen, row, addresses }) => {
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleClose} autoFocus>OK</Button>
+                <Button onClick={handleOk} autoFocus>OK</Button>
             </DialogActions>
         </Dialog>
 

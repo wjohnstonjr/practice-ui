@@ -4,9 +4,10 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { DataGrid } from '@mui/x-data-grid';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import Addresses from './Addresses';
 import Customer from './Customer';
+import { read as readCustomers, remove as deleteCustomer } from '../services/CustomerService';
 
 const formatAddress = (row) => {
     const address = `${row?.address?.street}
@@ -21,6 +22,12 @@ const Customers = ({ addresses }) => {
         type: 'include',
         ids: new Set(),
     });
+    const [, forceUpdate] = useReducer((x) => {
+        x + 1;
+        readCustomers(setRows);
+    }, 0);
+
+
     const [dialogOpen, setDialogOpen] = useState(false);
     const handleCreate = () => {
         setSelectedCustomer(null);
@@ -28,12 +35,12 @@ const Customers = ({ addresses }) => {
     }
     const [selectedCustomer, setSelectedCustomer] = useState(null);
     const handleUpdate = () => {
-        if (rowSelectionModel.type == 'include') {
-            setSelectedCustomer(rows.find((customer) => customer.id == rowSelectionModel.ids.values().next().value));
-        } else {
-            setSelectedCustomer(rows.filter((customer) => rowSelectionModel.ids.has(customer.id))[0]);
-        }
+        setSelectedCustomer(rows.find((customer) => customer.id == rowSelectionModel.ids.values().next().value));
         setDialogOpen(true);
+    }
+    const handleDelete = () => {
+        rowSelectionModel.ids.forEach(id => deleteCustomer(id));
+        forceUpdate();
     }
     const customerColumns = [
         { field: 'firstName', headerName: 'First Name', width: 100 },
@@ -48,14 +55,7 @@ const Customers = ({ addresses }) => {
         },
     ];
     useEffect(() => {
-        fetch('http://localhost:8080/customers')
-            .then((response) => response.json())
-            .then((data) => {
-                setRows(data);
-            })
-            .catch((err) => {
-                console.log(err.message);
-            });
+        readCustomers(setRows);
         setAddressList(addresses);
     }, [addresses]);
     return (
@@ -75,10 +75,11 @@ const Customers = ({ addresses }) => {
                                 <MenuItem onClick={() => {
                                     popupState.close();
                                     handleUpdate();
-                                }} disabled={(rowSelectionModel.type == 'include' && rowSelectionModel.ids.size != 1) ||
-                                    ((rowSelectionModel.type == 'exclude' && (rows.size - rowSelectionModel.ids.size) != 1))}>Update...</MenuItem>
-                                <MenuItem onClick={popupState.close} disabled={(rowSelectionModel.type == 'include' && rowSelectionModel.ids.size == 0) ||
-                                    (rowSelectionModel.type == 'exclude' && rowSelectionModel.ids.size == rows.size)}>Delete</MenuItem>
+                                }} disabled={rowSelectionModel.ids.size != 1}>Update...</MenuItem>
+                                <MenuItem onClick={() => {
+                                    popupState.close();
+                                    handleDelete();
+                                }} disabled={rowSelectionModel.ids.size == 0}>Delete</MenuItem>
                             </Menu>
                         </React.Fragment>
                     )}
@@ -96,8 +97,9 @@ const Customers = ({ addresses }) => {
                         console.log(Addresses.rows)
                     }}
                     rowSelectionModel={rowSelectionModel}
+                    disableRowSelectionExcludeModel={true}
                 />
-                <Customer open={dialogOpen} setOpen={setDialogOpen} row={selectedCustomer} addresses={addresses} />
+                <Customer open={dialogOpen} setOpen={setDialogOpen} row={selectedCustomer} addresses={addresses} forceUpdate={forceUpdate} />
             </Box>
 
         </div>

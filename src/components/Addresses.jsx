@@ -29,10 +29,8 @@ const Addresses = ({ rows, setRows }) => {
                             </Button>
                             <Menu {...bindMenu(popupState)}>
                                 <MenuItem onClick={popupState.close}>Create...</MenuItem>
-                                <MenuItem onClick={popupState.close} disabled={(rowSelectionModel.type == 'include' && rowSelectionModel.ids.size != 1) ||
-                                    ((rowSelectionModel.type == 'exclude' && (rows.size - rowSelectionModel.ids.size) != 1))}>Update...</MenuItem>
-                                <MenuItem onClick={popupState.close} disabled={(rowSelectionModel.type == 'include' && rowSelectionModel.ids.size == 0) ||
-                                    (rowSelectionModel.type == 'exclude' && rowSelectionModel.ids.size == rows.size)}>Delete</MenuItem>
+                                <MenuItem onClick={popupState.close} disabled={rowSelectionModel.ids.size != 1}>Update...</MenuItem>
+                                <MenuItem onClick={popupState.close} disabled={rowSelectionModel.ids.size == 0}>Delete</MenuItem>
                             </Menu>
                         </React.Fragment>
                     )}
@@ -42,9 +40,9 @@ const Addresses = ({ rows, setRows }) => {
                     columns={addressColumns}
                     onRowSelectionModelChange={(newRowSelectionModel) => {
                         setRowSelectionModel(newRowSelectionModel);
-                        console.log(newRowSelectionModel);
                     }}
                     rowSelectionModel={rowSelectionModel}
+                    disableRowSelectionExcludeModel={true}
                 />
             </Box>
         </div>

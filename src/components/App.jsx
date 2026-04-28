@@ -5,7 +5,7 @@ import { createTheme, ThemeProvider, useColorScheme } from '@mui/material/styles
 import { useEffect, useState } from 'react';
 import Addresses from './Addresses';
 import './App.css';
-import Customers from './Customers';
+import Customers from './CustomerTable';
 
 const theme = createTheme({
   colorSchemes: {
@@ -25,9 +25,9 @@ function ModeToggle() {
 
 const App = () => {
   const [addresses, setAddresses] = useState([]);
-  const [value, setValue] = useState(0);
+  const [selectedTab, setSelectedTab] = useState(0);
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setSelectedTab(newValue);
   };
   useEffect(() => {
     fetch('http://localhost:8080/address')
@@ -43,13 +43,13 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <ModeToggle />
-      <Tabs value={value} onChange={handleChange} >
+      <Tabs value={selectedTab} onChange={handleChange} >
         <Tab label="Customers" />
         <Tab label="Addresses" />
       </Tabs>
       <Box sx={{ p: 3 }}>
-        {value === 0 && <Customers addresses={addresses} />}
-        {value === 1 && <Addresses rows={addresses} setRows={setAddresses} />}
+        {selectedTab === 0 && <Customers addresses={addresses} />}
+        {selectedTab === 1 && <Addresses rows={addresses} setRows={setAddresses} />}
       </Box>
     </ThemeProvider>
   );
