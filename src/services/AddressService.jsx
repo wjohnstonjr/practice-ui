@@ -9,6 +9,9 @@ export const read = (setAddresses) => {
             console.log(err.message);
         });
 }
+export const read2 = (state) => {
+    state.list = ["One", "Two", "Three"];
+}
 
 export const update = async (id, street, city, state, zip) => {
     await fetch('http://localhost:8080/address', {

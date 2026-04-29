@@ -7,6 +7,8 @@ import Addresses from './AddressTable';
 import './App.css';
 import Customers from './CustomerTable';
 import { read as readAddresses } from '../services/AddressService';
+import { useSelector, useDispatch } from 'react-redux'
+import { read } from './AddressSlice';
 
 const theme = createTheme({
   colorSchemes: {
@@ -25,12 +27,16 @@ function ModeToggle() {
 }
 
 const App = () => {
+  const count = useSelector((state) => state.addresses?.list);
+  const dispatch = useDispatch();
+
   const [addresses, setAddresses] = useState([]);
   const [selectedTab, setSelectedTab] = useState(0);
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
   };
   useEffect(() => {
+    dispatch(read());
     readAddresses(setAddresses);
   }, []);
   return (
