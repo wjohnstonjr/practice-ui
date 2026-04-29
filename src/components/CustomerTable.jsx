@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { DataGrid } from '@mui/x-data-grid';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import React, { useEffect, useReducer, useState } from 'react';
-import Addresses from './Addresses';
+import Addresses from './AddressTable';
 import Customer from './Customer';
 import { read as readCustomers, remove as deleteCustomer } from '../services/CustomerService';
 
@@ -28,12 +28,12 @@ const Customers = ({ addresses }) => {
     }, 0);
 
 
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
     const [dialogOpen, setDialogOpen] = useState(false);
     const handleCreate = () => {
         setSelectedCustomer(null);
         setDialogOpen(true);
     }
-    const [selectedCustomer, setSelectedCustomer] = useState(null);
     const handleUpdate = () => {
         setSelectedCustomer(rows.find((customer) => customer.id == rowSelectionModel.ids.values().next().value));
         setDialogOpen(true);

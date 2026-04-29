@@ -3,9 +3,10 @@ import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider, useColorScheme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
-import Addresses from './Addresses';
+import Addresses from './AddressTable';
 import './App.css';
 import Customers from './CustomerTable';
+import { read as readAddresses } from '../services/AddressService';
 
 const theme = createTheme({
   colorSchemes: {
@@ -30,19 +31,11 @@ const App = () => {
     setSelectedTab(newValue);
   };
   useEffect(() => {
-    fetch('http://localhost:8080/address')
-      .then((response) => response.json())
-      .then((data) => {
-        setAddresses(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    readAddresses(setAddresses);
   }, []);
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <ModeToggle />
       <Tabs value={selectedTab} onChange={handleChange} >
         <Tab label="Customers" />
         <Tab label="Addresses" />
