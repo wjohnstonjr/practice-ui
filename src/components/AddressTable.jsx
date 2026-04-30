@@ -34,8 +34,10 @@ const Addresses = ({ rows, setRows }) => {
         setDialogOpen(true);
     }
     const handleDelete = () => {
-        rowSelectionModel.ids.forEach(id => deleteAddress(id));
-        forceUpdate();
+        rowSelectionModel.ids.forEach(id => {
+            deleteAddress(id);
+            forceUpdate();
+        });
         forceUpdate();
     }
     useEffect(() => {
