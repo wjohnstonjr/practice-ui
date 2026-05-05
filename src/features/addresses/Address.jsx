@@ -10,17 +10,22 @@ import {
     Select,
     TextField
 } from '@mui/material';
-import { update as updateAddress, create as createAddress } from '../services/AddressService';
+import { update as updateAddress, create as createAddress } from './AddressService';
+import { useDispatch, useSelector } from 'react-redux';
+import { setDialogOpen } from './AddressSlice';
 
-const Address = ({ open, setOpen, row, forceUpdate }) => {
-    const [street, setStreet] = useState(row?.street);
-    const [city, setCity] = useState(row?.city);
-    const [state, setState] = useState(row?.state);
-    const [zip, setZip] = useState(row?.zip);
+const Address = ({ forceUpdate }) => {
+    const selectedAddress = useSelector((state) => state.addresses?.selected);
+    const dialogOpen = useSelector((state) => state.addresses?.dialogOpen);
+    const dispatch = useDispatch();
+    const [street, setStreet] = useState(selectedAddress?.street);
+    const [city, setCity] = useState(selectedAddress?.city);
+    const [state, setState] = useState(selectedAddress?.state);
+    const [zip, setZip] = useState(selectedAddress?.zip);
     const handleOk = () => {
-        setOpen(false);
-        if (row?.id) {
-            updateAddress(row.id, street, city, state, zip)
+        dispatch(setDialogOpen(false));
+        if (selectedAddress?.id) {
+            updateAddress(selectedAddress.id, street, city, state, zip)
             forceUpdate();
         } else {
             createAddress(street, city, state, zip)
@@ -28,29 +33,29 @@ const Address = ({ open, setOpen, row, forceUpdate }) => {
         }
     }
     const handleClose = () => {
-        setOpen(false);
+        dispatch(setDialogOpen(false));
     }
 
     useEffect(() => {
-        if (row) {
-            setStreet(row?.street);
-            setCity(row?.city);
-            setState(row.state)
-            setZip(row.zip)
+        if (selectedAddress) {
+            setStreet(selectedAddress?.street);
+            setCity(selectedAddress?.city);
+            setState(selectedAddress.state)
+            setZip(selectedAddress.zip)
         } else {
             setStreet("");
             setCity("");
             setState("");
             setZip("");
         }
-    }, [open, row]);
+    }, [dialogOpen, selectedAddress]);
     return (
         <Dialog
-            open={open}
+            open={dialogOpen}
             onClose={handleClose}
         >
             <DialogTitle id="customer-title">
-                {row ? "Edit Customer" : "Create Customer"}
+                {selectedAddress ? "Edit Address" : "Create Address"}
             </DialogTitle>
             <DialogContent>
                 <TextField

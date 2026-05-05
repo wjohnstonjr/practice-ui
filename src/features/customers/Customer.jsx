@@ -10,16 +10,22 @@ import {
     Select,
     TextField
 } from '@mui/material';
-import { update as updateCustomer, create as createCustomer } from '../services/CustomerService';
+import { update as updateCustomer, create as createCustomer } from './CustomerService';
+import { useDispatch, useSelector } from 'react-redux';
+import { setDialogOpen } from './CustomerSlice';
 
-const Customer = ({ open, setOpen, row, addresses, forceUpdate }) => {
-    const [firstName, setFirstName] = useState(row?.firstName);
-    const [lastName, setLastName] = useState(row?.lastName);
-    const [addressId, setAddressId] = useState(row?.addressId);
+const Customer = ({ forceUpdate }) => {
+    const addresses = useSelector((state) => state.addresses?.list);
+    const selectedCustomer = useSelector((state) => state.customers?.selected);
+    const dialogOpen = useSelector((state) => state.customers?.dialogOpen);
+    const dispatch = useDispatch();
+    const [firstName, setFirstName] = useState(selectedCustomer?.firstName);
+    const [lastName, setLastName] = useState(selectedCustomer?.lastName);
+    const [addressId, setAddressId] = useState(selectedCustomer?.addressId);
     const handleOk = () => {
-        setOpen(false);
-        if (row?.id) {
-            updateCustomer(row.id, firstName, lastName, addressId)
+        dispatch(setDialogOpen(false));
+        if (selectedCustomer?.id) {
+            updateCustomer(selectedCustomer.id, firstName, lastName, addressId)
             forceUpdate();
         } else {
             createCustomer(firstName, lastName, addressId)
@@ -27,28 +33,27 @@ const Customer = ({ open, setOpen, row, addresses, forceUpdate }) => {
         }
     }
     const handleClose = () => {
-        setOpen(false);
+        dispatch(setDialogOpen(false));
     }
 
     useEffect(() => {
-        if (row) {
-            setFirstName(row?.firstName);
-            setLastName(row?.lastName);
-            setAddressId(row.addressId)
+        if (selectedCustomer) {
+            setFirstName(selectedCustomer?.firstName);
+            setLastName(selectedCustomer?.lastName);
+            setAddressId(selectedCustomer.addressId)
         } else {
             setFirstName("");
             setLastName("");
             setAddressId(addresses[0]?.id);
         }
-    }, [open, row, addresses]);
-    const options = ['Option 1', 'Option 2', 'Option 3'];
+    }, [dialogOpen, selectedCustomer, addresses]);
     return (
         <Dialog
-            open={open}
+            open={dialogOpen}
             onClose={handleClose}
         >
             <DialogTitle id="customer-title">
-                {row ? "Edit Customer" : "Create Customer"}
+                {selectedCustomer ? "Edit Customer" : "Create Customer"}
             </DialogTitle>
             <DialogContent>
                 <TextField

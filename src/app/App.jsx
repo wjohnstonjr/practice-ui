@@ -3,12 +3,9 @@ import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider, useColorScheme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
-import Addresses from './AddressTable';
+import AddressTable from '../features/addresses/AddressTable';
+import CustomerTable from '../features/customers/CustomerTable';
 import './App.css';
-import Customers from './CustomerTable';
-import { read as readAddresses } from '../services/AddressService';
-import { useSelector, useDispatch } from 'react-redux'
-import { read } from './AddressSlice';
 
 const theme = createTheme({
   colorSchemes: {
@@ -27,28 +24,22 @@ function ModeToggle() {
 }
 
 const App = () => {
-  const count = useSelector((state) => state.addresses?.list);
-  const dispatch = useDispatch();
-
-  const [addresses, setAddresses] = useState([]);
   const [selectedTab, setSelectedTab] = useState(0);
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
   };
   useEffect(() => {
-    dispatch(read());
-    readAddresses(setAddresses);
   }, []);
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Tabs value={selectedTab} onChange={handleChange} >
-        <Tab label="Customers" />
         <Tab label="Addresses" />
+        <Tab label="Customers" />
       </Tabs>
       <Box sx={{ p: 3 }}>
-        {selectedTab === 0 && <Customers addresses={addresses} />}
-        {selectedTab === 1 && <Addresses rows={addresses} setRows={setAddresses} />}
+        {selectedTab === 0 && <AddressTable />}
+        {selectedTab === 1 && <CustomerTable />}
       </Box>
     </ThemeProvider>
   );
