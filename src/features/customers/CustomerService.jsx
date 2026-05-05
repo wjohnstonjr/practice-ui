@@ -1,15 +1,3 @@
-
-export const read = async (setCustomers) => {
-    await fetch('http://localhost:8080/customers')
-        .then((response) => response.json())
-        .then((data) => {
-            setCustomers(data);
-        })
-        .catch((err) => {
-            console.log(err.message);
-        });
-}
-
 export const update = async (id, firstName, lastName, addressId) => {
     try {
         const response = await fetch('http://localhost:8080/customers', {
@@ -25,7 +13,6 @@ export const update = async (id, firstName, lastName, addressId) => {
             },
         });
         const data = await response.json();
-        console.log(data);
     } catch (err) {
         console.log(err.message);
     };
@@ -45,7 +32,6 @@ export const create = async (firstName, lastName, addressId) => {
             },
         });
         const data = await response.json();
-        console.log(data);
     } catch (err) {
         console.log(err.message);
     };
@@ -60,7 +46,6 @@ export const remove = async (id) => {
             },
         })
         const data = await response.json();
-        console.log(data);
     } catch (err) {
         console.log(err.message);
     };

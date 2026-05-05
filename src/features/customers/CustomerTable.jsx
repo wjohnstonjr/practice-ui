@@ -5,9 +5,13 @@ import MenuItem from '@mui/material/MenuItem';
 import { DataGrid } from '@mui/x-data-grid';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import React, { useEffect, useReducer, useState } from 'react';
-import Addresses from './AddressTable';
+import AddressTable from '../addresses/AddressTable';
 import Customer from './Customer';
-import { read as readCustomers, remove as deleteCustomer } from '../services/CustomerService';
+import { remove as deleteCustomer } from './CustomerService';
+import { useSelector, useDispatch } from 'react-redux';
+import { setCustomers, setSelections, setSelected, setDialogOpen } from './CustomerSlice';
+import { useGetCustomersQuery } from './CustomerApi';
+
 
 const formatAddress = (row) => {
     const address = `${row?.address?.street}
@@ -15,32 +19,26 @@ ${row?.address?.city}, ${row.address?.state} ${row.address?.zip}`
     return address;
 }
 
-const Customers = ({ addresses }) => {
-    const [addressList, setAddressList] = useState(addresses);
-    const [rows, setRows] = useState([]);
-    const [rowSelectionModel, setRowSelectionModel] = useState({
-        type: 'include',
-        ids: new Set(),
-    });
-    const [, forceUpdate] = useReducer((x) => {
-        x + 1;
-        readCustomers(setRows);
-    }, 0);
+const CustomerTable = () => {
+    const { data, isLoading, isError, refetch } = useGetCustomersQuery();
+    const customers = useSelector((state) => state.customers?.list);
+    const selections = useSelector((state) => state.customers?.selections);
+    const selectionCount = useSelector((state) => state.customers?.selectionCount);
+    const dialogOpen = useSelector((state) => state.addresses?.dialogOpen);
+    const dispatch = useDispatch();
+    const addresses = useSelector((state) => state.addresses?.list);
 
-
-    const [selectedCustomer, setSelectedCustomer] = useState(null);
-    const [dialogOpen, setDialogOpen] = useState(false);
     const handleCreate = () => {
-        setSelectedCustomer(null);
-        setDialogOpen(true);
+        dispatch(setSelected(null));
+        dispatch(setDialogOpen(true));
     }
     const handleUpdate = () => {
-        setSelectedCustomer(rows.find((customer) => customer.id == rowSelectionModel.ids.values().next().value));
-        setDialogOpen(true);
+        dispatch(setSelected(customers.find((customer) => customer.id == selections[0])));
+        dispatch(setDialogOpen(true));
     }
     const handleDelete = () => {
-        rowSelectionModel.ids.forEach(id => deleteCustomer(id));
-        forceUpdate();
+        selections.forEach(id => deleteCustomer(id));
+        refetch();
     }
     const customerColumns = [
         { field: 'firstName', headerName: 'First Name', width: 100 },
@@ -54,10 +52,16 @@ const Customers = ({ addresses }) => {
             )
         },
     ];
-    useEffect(() => {
-        readCustomers(setRows);
-        setAddressList(addresses);
-    }, [addresses]);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    } else if (isError) {
+        return <div>Failed to load the customers</div>;
+    } else {
+        if (data) {
+            dispatch(setCustomers(data));
+        }
+    }
     return (
         <div className="customer-container">
             <Box>
@@ -75,11 +79,11 @@ const Customers = ({ addresses }) => {
                                 <MenuItem onClick={() => {
                                     popupState.close();
                                     handleUpdate();
-                                }} disabled={rowSelectionModel.ids.size != 1}>Update...</MenuItem>
+                                }} disabled={selectionCount != 1}>Update...</MenuItem>
                                 <MenuItem onClick={() => {
                                     popupState.close();
                                     handleDelete();
-                                }} disabled={rowSelectionModel.ids.size == 0}>Delete</MenuItem>
+                                }} disabled={selectionCount == 0}>Delete</MenuItem>
                             </Menu>
                         </React.Fragment>
                     )}
@@ -90,20 +94,18 @@ const Customers = ({ addresses }) => {
                             columnVisibilityModel: { addressId: false },
                         },
                     }}
-                    rows={rows}
+                    rows={customers}
                     columns={customerColumns}
                     onRowSelectionModelChange={(newRowSelectionModel) => {
-                        setRowSelectionModel(newRowSelectionModel);
-                        console.log(Addresses.rows)
+                        dispatch(setSelections([...newRowSelectionModel.ids]))
                     }}
-                    rowSelectionModel={rowSelectionModel}
                     disableRowSelectionExcludeModel={true}
                 />
-                <Customer open={dialogOpen} setOpen={setDialogOpen} row={selectedCustomer} addresses={addresses} forceUpdate={forceUpdate} />
+                <Customer forceUpdate={refetch} />
             </Box>
 
         </div>
     );
 };
 
-export default Customers;
+export default CustomerTable;

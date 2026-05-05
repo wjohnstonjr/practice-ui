@@ -1,15 +1,3 @@
-
-export const read = async (setAddresses) => {
-    await fetch('http://localhost:8080/address')
-        .then((response) => response.json())
-        .then((data) => {
-            setAddresses(data);
-        })
-        .catch((err) => {
-            console.log(err.message);
-        });
-}
-
 export const update = async (id, street, city, state, zip) => {
     try {
         const response = await fetch('http://localhost:8080/address', {
@@ -26,7 +14,6 @@ export const update = async (id, street, city, state, zip) => {
             },
         });
         const data = await response.json();
-        console.log(data);
     } catch (err) {
         console.log(err.message);
     };
@@ -47,7 +34,6 @@ export const create = async (street, city, state, zip) => {
             },
         });
         const data = await response.json();
-        console.log(data);
     } catch (err) {
         console.log(err.message);
     };
@@ -62,7 +48,6 @@ export const remove = async (id) => {
             },
         });
         const data = await response.json();
-        console.log(data);
     } catch (err) {
         console.log(err.message);
     };
