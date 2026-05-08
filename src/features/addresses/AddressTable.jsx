@@ -46,10 +46,6 @@ const AddressTable = () => {
         return <div>Loading...</div>;
     } else if (isError) {
         return <div>Failed to load the addresses</div>;
-    } else {
-        if (data) {
-            dispatch(setAddresses(data));
-        }
     }
     return (
         <div className="address-container">
