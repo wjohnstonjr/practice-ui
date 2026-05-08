@@ -24,7 +24,7 @@ const CustomerTable = () => {
     const customers = useSelector((state) => state.customers?.list);
     const selections = useSelector((state) => state.customers?.selections);
     const selectionCount = useSelector((state) => state.customers?.selectionCount);
-    const dialogOpen = useSelector((state) => state.addresses?.dialogOpen);
+    const dialogOpen = useSelector((state) => state.customers?.dialogOpen);
     const dispatch = useDispatch();
     const addresses = useSelector((state) => state.addresses?.list);
 
@@ -57,10 +57,6 @@ const CustomerTable = () => {
         return <div>Loading...</div>;
     } else if (isError) {
         return <div>Failed to load the customers</div>;
-    } else {
-        if (data) {
-            dispatch(setCustomers(data));
-        }
     }
     return (
         <div className="customer-container">

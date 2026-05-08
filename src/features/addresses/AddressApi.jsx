@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { setAddresses } from './AddressSlice';
 
 export const addressApi = createApi({
     reducerPath: 'addressApi',
@@ -6,7 +7,15 @@ export const addressApi = createApi({
     endpoints: (builder) => ({
         // A simple query without inputs
         getAddresses: builder.query({
-            query: () => 'address', // Returns the URL path string
+            query: () => 'address',
+            async onQueryStarted(args, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    dispatch(setAddresses(data));
+                } catch (err) {
+                    console.log(err);
+                }
+            },
         }),
     }),
 })

@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { setCustomers } from './CustomerSlice';
 
 export const customerApi = createApi({
     reducerPath: 'customerApi',
@@ -6,7 +7,15 @@ export const customerApi = createApi({
     endpoints: (builder) => ({
         // A simple query without inputs
         getCustomers: builder.query({
-            query: () => 'customers', // Returns the URL path string
+            query: () => 'customers',
+            async onQueryStarted(args, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    dispatch(setCustomers(data));
+                } catch (err) {
+                    console.log(err);
+                }
+            },
         }),
     }),
 })

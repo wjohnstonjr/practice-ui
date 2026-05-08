@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react';
 import {
     Button,
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle,
     MenuItem,
     Select,
     TextField
 } from '@mui/material';
-import { update as updateCustomer, create as createCustomer } from './CustomerService';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { create as createCustomer, update as updateCustomer } from './CustomerService';
 import { setDialogOpen } from './CustomerSlice';
 
 const Customer = ({ forceUpdate }) => {
