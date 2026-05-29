@@ -1,7 +1,7 @@
 export const update = async (id, street, city, state, zip) => {
     try {
         const response = await fetch('http://localhost:8080/address', {
-            method: 'POST',
+            method: 'PUT',
             body: JSON.stringify({
                 id: id,
                 street: street,
@@ -22,7 +22,7 @@ export const update = async (id, street, city, state, zip) => {
 export const create = async (street, city, state, zip) => {
     try {
         const response = await fetch('http://localhost:8080/address', {
-            method: 'PUT',
+            method: 'POST',
             body: JSON.stringify({
                 street: street,
                 city: city,
