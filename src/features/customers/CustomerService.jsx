@@ -1,7 +1,7 @@
 export const update = async (id, firstName, lastName, addressId) => {
     try {
         const response = await fetch('http://localhost:8080/customers', {
-            method: 'POST',
+            method: 'PUT',
             body: JSON.stringify({
                 id: id,
                 firstName: firstName,
@@ -21,7 +21,7 @@ export const update = async (id, firstName, lastName, addressId) => {
 export const create = async (firstName, lastName, addressId) => {
     try {
         const response = await fetch('http://localhost:8080/customers', {
-            method: 'PUT',
+            method: 'POST',
             body: JSON.stringify({
                 firstName: firstName,
                 lastName: lastName,
