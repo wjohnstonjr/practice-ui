@@ -3,6 +3,7 @@ import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider, useColorScheme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 import AddressTable from '../features/addresses/AddressTable';
 import CustomerTable from '../features/customers/CustomerTable';
 import './App.css';
@@ -41,6 +42,7 @@ const App = () => {
         {selectedTab === 0 && <AddressTable />}
         {selectedTab === 1 && <CustomerTable />}
       </Box>
+      <Toaster position="bottom-right" reverseOrder={false} />
     </ThemeProvider>
   );
 };

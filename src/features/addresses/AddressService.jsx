@@ -1,3 +1,5 @@
+import toast from 'react-hot-toast';
+
 export const update = async (id, street, city, state, zip) => {
     try {
         const response = await fetch('http://localhost:8080/address', {
@@ -48,6 +50,11 @@ export const remove = async (id) => {
             },
         });
         const data = await response.json();
+        if (data == 0) {
+            toast.error("Failed to delete the address");
+        } else {
+            toast.success("Successfully deleted the address");
+        }
     } catch (err) {
         console.log(err.message);
     };
