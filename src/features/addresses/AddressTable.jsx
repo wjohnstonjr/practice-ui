@@ -3,13 +3,15 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { DataGrid } from '@mui/x-data-grid';
+import { Map, NavigationControl } from '@vis.gl/react-maplibre';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-import React, { useEffect, useReducer, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Address from './Address';
 import { useGetAddressesQuery } from './AddressApi';
 import { remove as deleteAddress } from './AddressService';
-import Address from './Address';
-import { setAddresses, setSelections, setSelected, setDialogOpen } from './AddressSlice';
+import { setDialogOpen, setSelected, setSelections } from './AddressSlice';
 
 
 const AddressTable = () => {
@@ -82,9 +84,22 @@ const AddressTable = () => {
                     disableRowSelectionExcludeModel={true}
                 />
                 <Address forceUpdate={refetch} />
+                {(selectionCount == 1) && <Map
+                    initialViewState={{
+                        longitude: addresses.find((address) => address.id == selections[0]).coordinates.coordinates[0],
+                        latitude: addresses.find((address) => address.id == selections[0]).coordinates.coordinates[1],
+                        zoom: 4
+                    }}
+                    style={{
+                        width: "100%", height: 400
+                    }}
+                    mapStyle="https://demotiles.maplibre.org/style.json"
+                >
+                    <NavigationControl position="top-right" showCompass={true} />
+                </Map>}
 
             </Box>
-        </div>
+        </div >
     );
 };
 
