@@ -3,7 +3,8 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { DataGrid } from '@mui/x-data-grid';
-import { Map, NavigationControl } from '@vis.gl/react-maplibre';
+import { Layer, Map, NavigationControl, Source } from '@vis.gl/react-maplibre';
+import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import React from 'react';
@@ -12,7 +13,6 @@ import Address from './Address';
 import { useGetAddressesQuery } from './AddressApi';
 import { remove as deleteAddress } from './AddressService';
 import { setDialogOpen, setSelected, setSelections } from './AddressSlice';
-
 
 const AddressTable = () => {
     const { data, isLoading, isError, refetch } = useGetAddressesQuery();
@@ -43,6 +43,35 @@ const AddressTable = () => {
         });
         refetch();
     }
+
+    const parksLayer = {
+        id: 'parks',
+        type: 'fill', // or 'circle' for points, 'line' for geometries
+        'source-layer': 'park', // Exact layer name from Martin/PostGIS
+        paint: {
+            'fill-color': '#00bf00',
+            'fill-opacity': 0.6
+        }
+    };
+    const waterLayer = {
+        id: 'water',
+        type: 'fill',
+        'source-layer': 'water', // Exact layer name from Martin/PostGIS
+        paint: {
+            'fill-color': '#007cbf',
+            'fill-opacity': 0.6
+        }
+    };
+    const transportationLayer = {
+        id: 'transportation_name',
+        type: 'line',
+        'source-layer': 'transportation_name', // Exact layer name from Martin/PostGIS
+        paint: {
+            'line-color': '#bf0000',
+            'line-width': 2
+        }
+    };
+
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -93,8 +122,19 @@ const AddressTable = () => {
                     style={{
                         width: "100%", height: 400
                     }}
+                    mapLib={maplibregl}
                     mapStyle="https://demotiles.maplibre.org/style.json"
                 >
+                    <Source
+                        id="martin-nj-pmtiles"
+                        type="vector"
+                        // Can point to an S3/R2 URL or your local Martin Tile Server
+                        tiles={['http://localhost:3000/new-jersey/{z}/{x}/{y}']}
+                    >
+                        <Layer {...transportationLayer} />
+                        <Layer {...parksLayer} />
+                        <Layer {...waterLayer} />
+                    </Source>
                     <NavigationControl position="top-right" showCompass={true} />
                 </Map>}
 
