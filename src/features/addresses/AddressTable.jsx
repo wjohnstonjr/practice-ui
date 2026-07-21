@@ -71,6 +71,15 @@ const AddressTable = () => {
             'line-width': 2
         }
     };
+    const runwaysLayer = {
+        id: 'runways',
+        type: 'fill',
+        'source-layer': 'runways', // Exact layer name from Martin/PostGIS
+        paint: {
+            'fill-color': '#bf005f',
+            'fill-opacity': 0.6
+        }
+    };
 
 
     if (isLoading) {
@@ -117,7 +126,7 @@ const AddressTable = () => {
                     initialViewState={{
                         longitude: addresses.find((address) => address.id == selections[0]).coordinates.coordinates[0],
                         latitude: addresses.find((address) => address.id == selections[0]).coordinates.coordinates[1],
-                        zoom: 4
+                        zoom: 10
                     }}
                     style={{
                         width: "100%", height: 400
@@ -134,6 +143,14 @@ const AddressTable = () => {
                         <Layer {...transportationLayer} />
                         <Layer {...parksLayer} />
                         <Layer {...waterLayer} />
+                    </Source>
+                    <Source
+                        id="postgis-runways"
+                        type="vector"
+                        // Can point to an S3/R2 URL or your local Martin Tile Server
+                        tiles={['http://localhost:3001/runways_suitable/{z}/{x}/{y}?aircraft=C17']}
+                    >
+                        <Layer {...runwaysLayer} />
                     </Source>
                     <NavigationControl position="top-right" showCompass={true} />
                 </Map>}
