@@ -38,8 +38,7 @@ const AddressTable = () => {
     }
     const handleDelete = () => {
         selections.forEach(id => {
-            deleteAddress(id);
-            refetch();
+            deleteAddress(id, refetch);
         });
         refetch();
     }
@@ -49,7 +48,7 @@ const AddressTable = () => {
         type: 'fill', // or 'circle' for points, 'line' for geometries
         'source-layer': 'park', // Exact layer name from Martin/PostGIS
         paint: {
-            'fill-color': '#00bf00',
+            'fill-color': '#00ff00',
             'fill-opacity': 0.6
         }
     };
@@ -58,7 +57,7 @@ const AddressTable = () => {
         type: 'fill',
         'source-layer': 'water', // Exact layer name from Martin/PostGIS
         paint: {
-            'fill-color': '#007cbf',
+            'fill-color': '#0e87cc',
             'fill-opacity': 0.6
         }
     };
@@ -67,7 +66,7 @@ const AddressTable = () => {
         type: 'line',
         'source-layer': 'transportation_name', // Exact layer name from Martin/PostGIS
         paint: {
-            'line-color': '#bf0000',
+            'line-color': '#ff0000',
             'line-width': 2
         }
     };
@@ -76,7 +75,7 @@ const AddressTable = () => {
         type: 'fill',
         'source-layer': 'runways', // Exact layer name from Martin/PostGIS
         paint: {
-            'fill-color': '#bf005f',
+            'fill-color': '#ffa500',
             'fill-opacity': 0.6
         }
     };
@@ -126,7 +125,7 @@ const AddressTable = () => {
                     initialViewState={{
                         longitude: addresses.find((address) => address.id == selections[0]).coordinates.coordinates[0],
                         latitude: addresses.find((address) => address.id == selections[0]).coordinates.coordinates[1],
-                        zoom: 10
+                        zoom: 12
                     }}
                     style={{
                         width: "100%", height: 400
