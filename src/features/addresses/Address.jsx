@@ -25,11 +25,9 @@ const Address = ({ forceUpdate }) => {
     const handleOk = () => {
         dispatch(setDialogOpen(false));
         if (selectedAddress?.id) {
-            updateAddress(selectedAddress.id, street, city, state, zip)
-            forceUpdate();
+            updateAddress(selectedAddress.id, street, city, state, zip, forceUpdate)
         } else {
-            createAddress(street, city, state, zip)
-            forceUpdate();
+            createAddress(street, city, state, zip, forceUpdate)
         }
     }
     const handleClose = () => {

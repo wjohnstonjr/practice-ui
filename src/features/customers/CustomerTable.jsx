@@ -37,8 +37,8 @@ const CustomerTable = () => {
         dispatch(setDialogOpen(true));
     }
     const handleDelete = () => {
-        selections.forEach(id => deleteCustomer(id));
-        refetch();
+        selections.forEach(id => deleteCustomer(id, refetch));
+
     }
     const customerColumns = [
         { field: 'firstName', headerName: 'First Name', width: 100 },

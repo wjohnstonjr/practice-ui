@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
 
-export const update = async (id, street, city, state, zip) => {
+export const update = async (id, street, city, state, zip, forceUpdate) => {
     try {
         const response = await fetch('http://localhost:8080/address', {
             method: 'PUT',
@@ -17,13 +17,14 @@ export const update = async (id, street, city, state, zip) => {
         });
         const data = await response.json();
         toast.success("Successfully updated the address");
+        await forceUpdate();
     } catch (err) {
         console.log(err.message);
         toast.error("Failed to update the address");
     };
 }
 
-export const create = async (street, city, state, zip) => {
+export const create = async (street, city, state, zip, forceUpdate) => {
     try {
         const response = await fetch('http://localhost:8080/address', {
             method: 'POST',
@@ -39,13 +40,14 @@ export const create = async (street, city, state, zip) => {
         });
         const data = await response.json();
         toast.success("Successfully created the address");
+        await forceUpdate();
     } catch (err) {
         console.log(err.message);
         toast.error("Failed to create the address");
     };
 }
 
-export const remove = async (id) => {
+export const remove = async (id, forceUpdate) => {
     try {
         const response = await fetch('http://localhost:8080/address/' + id, {
             method: 'DELETE',
@@ -59,6 +61,7 @@ export const remove = async (id) => {
         } else {
             toast.success("Successfully deleted the address");
         }
+        await forceUpdate();
     } catch (err) {
         console.log(err.message);
         toast.error("Failed to delete the address");

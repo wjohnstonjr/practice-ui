@@ -36,10 +36,9 @@ const AddressTable = () => {
     }
     const handleDelete = () => {
         selections.forEach(id => {
-            deleteAddress(id);
-            refetch();
+            deleteAddress(id, refetch);
         });
-        refetch();
+
     }
 
     if (isLoading) {
