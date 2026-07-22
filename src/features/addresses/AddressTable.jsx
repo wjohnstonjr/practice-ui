@@ -128,7 +128,7 @@ const AddressTable = () => {
                         zoom: 12
                     }}
                     style={{
-                        width: "100%", height: 400
+                        width: "50%", height: 400, margin: '0 auto'
                     }}
                     mapLib={maplibregl}
                     mapStyle="https://demotiles.maplibre.org/style.json"
