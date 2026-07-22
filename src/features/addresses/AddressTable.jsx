@@ -40,7 +40,7 @@ const AddressTable = () => {
         selections.forEach(id => {
             deleteAddress(id, refetch);
         });
-        refetch();
+
     }
 
     const parksLayer = {
