@@ -24,11 +24,9 @@ const Customer = ({ forceUpdate }) => {
     const handleOk = () => {
         dispatch(setDialogOpen(false));
         if (selectedCustomer?.id) {
-            updateCustomer(selectedCustomer.id, firstName, lastName, addressId)
-            forceUpdate();
+            updateCustomer(selectedCustomer.id, firstName, lastName, addressId, forceUpdate)
         } else {
-            createCustomer(firstName, lastName, addressId)
-            forceUpdate();
+            createCustomer(firstName, lastName, addressId, forceUpdate)
         }
     }
     const handleClose = () => {

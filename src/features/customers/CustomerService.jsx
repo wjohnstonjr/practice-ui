@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
 
-export const update = async (id, firstName, lastName, addressId) => {
+export const update = async (id, firstName, lastName, addressId, forceUpdate) => {
     try {
         const response = await fetch('http://localhost:8080/customers', {
             method: 'PUT',
@@ -16,13 +16,14 @@ export const update = async (id, firstName, lastName, addressId) => {
         });
         const data = await response.json();
         toast.success("Successfully updated the customer");
+        await forceUpdate();
     } catch (err) {
         console.log(err.message);
         toast.error("Failed to update the customer");
     };
 }
 
-export const create = async (firstName, lastName, addressId) => {
+export const create = async (firstName, lastName, addressId, forceUpdate) => {
     try {
         const response = await fetch('http://localhost:8080/customers', {
             method: 'POST',
@@ -37,13 +38,14 @@ export const create = async (firstName, lastName, addressId) => {
         });
         const data = await response.json();
         toast.success("Successfully created the customer");
+        await forceUpdate();
     } catch (err) {
         console.log(err.message);
         toast.error("Failed to create the customer");
     };
 }
 
-export const remove = async (id) => {
+export const remove = async (id, forceUpdate) => {
     try {
         const response = await fetch('http://localhost:8080/customers/' + id, {
             method: 'DELETE',
@@ -52,7 +54,12 @@ export const remove = async (id) => {
             },
         })
         const data = await response.json();
-        toast.success("Successfully deleted the customer");
+        if (data == 0) {
+            toast.error("Failed to delete the customer");
+        } else {
+            toast.success("Successfully deleted the customer");
+        }
+        await forceUpdate();
     } catch (err) {
         console.log(err.message);
         toast.error("Failed to delete the customer");
