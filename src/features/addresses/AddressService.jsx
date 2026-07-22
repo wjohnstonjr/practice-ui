@@ -16,8 +16,10 @@ export const update = async (id, street, city, state, zip) => {
             },
         });
         const data = await response.json();
+        toast.success("Successfully updated the address");
     } catch (err) {
         console.log(err.message);
+        toast.error("Failed to update the address");
     };
 }
 
@@ -36,8 +38,10 @@ export const create = async (street, city, state, zip) => {
             },
         });
         const data = await response.json();
+        toast.success("Successfully created the address");
     } catch (err) {
         console.log(err.message);
+        toast.error("Failed to create the address");
     };
 }
 
@@ -57,5 +61,6 @@ export const remove = async (id) => {
         }
     } catch (err) {
         console.log(err.message);
+        toast.error("Failed to delete the address");
     };
 }

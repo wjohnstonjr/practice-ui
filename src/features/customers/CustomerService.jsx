@@ -1,3 +1,5 @@
+import toast from 'react-hot-toast';
+
 export const update = async (id, firstName, lastName, addressId) => {
     try {
         const response = await fetch('http://localhost:8080/customers', {
@@ -13,8 +15,10 @@ export const update = async (id, firstName, lastName, addressId) => {
             },
         });
         const data = await response.json();
+        toast.success("Successfully updated the customer");
     } catch (err) {
         console.log(err.message);
+        toast.error("Failed to update the customer");
     };
 }
 
@@ -32,8 +36,10 @@ export const create = async (firstName, lastName, addressId) => {
             },
         });
         const data = await response.json();
+        toast.success("Successfully created the customer");
     } catch (err) {
         console.log(err.message);
+        toast.error("Failed to create the customer");
     };
 }
 
@@ -46,7 +52,9 @@ export const remove = async (id) => {
             },
         })
         const data = await response.json();
+        toast.success("Successfully deleted the customer");
     } catch (err) {
         console.log(err.message);
+        toast.error("Failed to delete the customer");
     };
 }
