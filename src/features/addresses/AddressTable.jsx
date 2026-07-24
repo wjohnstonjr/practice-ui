@@ -123,8 +123,8 @@ const AddressTable = () => {
                 <Address forceUpdate={refetch} />
                 {(selectionCount == 1) && <Map
                     initialViewState={{
-                        longitude: addresses.find((address) => address.id == selections[0]).coordinates.coordinates[0],
-                        latitude: addresses.find((address) => address.id == selections[0]).coordinates.coordinates[1],
+                        longitude: addresses.find((address) => address.id == selections[0])?.coordinates.coordinates[0],
+                        latitude: addresses.find((address) => address.id == selections[0])?.coordinates.coordinates[1],
                         zoom: 12
                     }}
                     style={{
