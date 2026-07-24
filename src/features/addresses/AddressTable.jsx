@@ -45,8 +45,8 @@ const AddressTable = () => {
 
     const parksLayer = {
         id: 'parks',
-        type: 'fill', // or 'circle' for points, 'line' for geometries
-        'source-layer': 'park', // Exact layer name from Martin/PostGIS
+        type: 'fill',
+        'source-layer': 'park',
         paint: {
             'fill-color': '#00ff00',
             'fill-opacity': 0.6
@@ -55,7 +55,7 @@ const AddressTable = () => {
     const waterLayer = {
         id: 'water',
         type: 'fill',
-        'source-layer': 'water', // Exact layer name from Martin/PostGIS
+        'source-layer': 'water',
         paint: {
             'fill-color': '#0e87cc',
             'fill-opacity': 0.6
@@ -64,7 +64,7 @@ const AddressTable = () => {
     const transportationLayer = {
         id: 'transportation_name',
         type: 'line',
-        'source-layer': 'transportation_name', // Exact layer name from Martin/PostGIS
+        'source-layer': 'transportation_name',
         paint: {
             'line-color': '#ff0000',
             'line-width': 2
@@ -73,13 +73,30 @@ const AddressTable = () => {
     const runwaysLayer = {
         id: 'runways',
         type: 'fill',
-        'source-layer': 'runways', // Exact layer name from Martin/PostGIS
+        'source-layer': 'runways',
         paint: {
             'fill-color': '#ffa500',
             'fill-opacity': 0.6
         }
     };
-
+    const countriesLayer = {
+        id: 'ne_10m_admin_0_countries',
+        type: 'line',
+        'source-layer': 'ne_10m_admin_0_countries',
+        paint: {
+            'line-color': '#ff006a',
+            'line-width': 2
+        }
+    };
+    const railroadsLayer = {
+        id: 'ne_10m_railroads',
+        type: 'line',
+        'source-layer': 'ne_10m_railroads',
+        paint: {
+            'line-color': '#000000',
+            'line-width': 2
+        }
+    };
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -136,7 +153,6 @@ const AddressTable = () => {
                     <Source
                         id="martin-nj-pmtiles"
                         type="vector"
-                        // Can point to an S3/R2 URL or your local Martin Tile Server
                         tiles={['http://localhost:3000/new-jersey/{z}/{x}/{y}']}
                     >
                         <Layer {...transportationLayer} />
@@ -146,10 +162,23 @@ const AddressTable = () => {
                     <Source
                         id="postgis-runways"
                         type="vector"
-                        // Can point to an S3/R2 URL or your local Martin Tile Server
                         tiles={['http://localhost:3001/runways_suitable/{z}/{x}/{y}?aircraft=C17']}
                     >
                         <Layer {...runwaysLayer} />
+                    </Source>
+                    <Source
+                        id="countries"
+                        type="vector"
+                        tiles={['http://localhost:3000/countries/{z}/{x}/{y}']}
+                    >
+                        <Layer {...countriesLayer} />
+                    </Source>
+                    <Source
+                        id="railroads"
+                        type="vector"
+                        tiles={['http://localhost:3000/railroads/{z}/{x}/{y}']}
+                    >
+                        <Layer {...railroadsLayer} />
                     </Source>
                     <NavigationControl position="top-right" showCompass={true} />
                 </Map>}
