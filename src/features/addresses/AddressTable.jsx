@@ -184,7 +184,7 @@ const AddressTable = () => {
                 </Map>}
 
             </Box>
-        </div >
+        </div>
     );
 };
 
