@@ -140,7 +140,7 @@ const AddressTable = () => {
                 addresses.find((address) => address.id == selections[0])?.coordinates.coordinates[1]]
         }
     };
-    const pixelCircleStyle = {
+    const pixelCircleLayer = {
         id: 'pixel-circle',
         type: 'circle',
         paint: {
@@ -259,7 +259,7 @@ const AddressTable = () => {
                         attributionControl={false}
                     >
                         <Source id="my-rect" type="geojson" data={pointGeoJSON}>
-                            <Layer {...pixelCircleStyle} />
+                            <Layer {...pixelCircleLayer} />
                         </Source>
                     </Map>}
                 </div>
