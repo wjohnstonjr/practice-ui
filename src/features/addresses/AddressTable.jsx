@@ -132,6 +132,24 @@ const AddressTable = () => {
         ]
     }
 
+    const pointGeoJSON = {
+        type: 'Feature',
+        geometry: {
+            type: 'Point', coordinates:
+                [addresses.find((address) => address.id == selections[0])?.coordinates.coordinates[0],
+                addresses.find((address) => address.id == selections[0])?.coordinates.coordinates[1]]
+        }
+    };
+    const pixelCircleStyle = {
+        id: 'pixel-circle',
+        type: 'circle',
+        paint: {
+            'circle-radius': 5, // size in pixels
+            'circle-color': '#000000',
+            'circle-opacity': 0.5
+        }
+    };
+
     if (isLoading) {
         return <div>Loading...</div>;
     } else if (isError) {
@@ -175,51 +193,76 @@ const AddressTable = () => {
                     />
                 </div>
                 <Address forceUpdate={refetch} />
-                {(selectionCount == 1) && <Map
-                    ref={mapRef}
-                    onClick={getRawTileData}
-                    initialViewState={{
-                        longitude: addresses.find((address) => address.id == selections[0])?.coordinates.coordinates[0],
-                        latitude: addresses.find((address) => address.id == selections[0])?.coordinates.coordinates[1],
-                        zoom: 12
-                    }}
-                    style={{
-                        width: "50%", height: 375, margin: '0 auto'
-                    }}
-                    mapLib={maplibregl}
-                    mapStyle={osmRasterStyle}
-                >
-                    <Source
-                        id="martin-nj-pmtiles"
-                        type="vector"
-                        tiles={['http://localhost:3000/new-jersey/{z}/{x}/{y}']}
+                <div style={{ display: 'flex', flexDirection: 'row', gap: '2px' }}>
+                    {(selectionCount == 1) && <Map
+                        ref={mapRef}
+                        onClick={getRawTileData}
+                        initialViewState={{
+                            longitude: addresses.find((address) => address.id == selections[0])?.coordinates.coordinates[0],
+                            latitude: addresses.find((address) => address.id == selections[0])?.coordinates.coordinates[1],
+                            zoom: 12
+                        }}
+                        style={{
+                            width: "50%", height: 375, margin: '0 auto'
+                        }}
+                        mapLib={maplibregl}
+                        mapStyle={osmRasterStyle}
                     >
-                        <Layer {...waterLayer} />
-                    </Source>
-                    <Source
-                        id="postgis-runways"
-                        type="vector"
-                        tiles={['http://localhost:3000/runways_suitable/{z}/{x}/{y}?aircraft=C17']}
+                        <Source
+                            id="martin-nj-pmtiles"
+                            type="vector"
+                            tiles={['http://localhost:3000/new-jersey/{z}/{x}/{y}']}
+                        >
+                            <Layer {...waterLayer} />
+                        </Source>
+                        <Source
+                            id="postgis-runways"
+                            type="vector"
+                            tiles={['http://localhost:3000/runways_suitable/{z}/{x}/{y}?aircraft=C17']}
+                        >
+                            <Layer {...runwaysLayer} />
+                            <Layer {...runwaysLabelLayer} />
+                        </Source>
+                        <Source
+                            id="countries"
+                            type="vector"
+                            tiles={['http://localhost:3000/countries/{z}/{x}/{y}']}
+                        >
+                            <Layer {...countriesLayer} />
+                        </Source>
+                        <Source
+                            id="railroads"
+                            type="vector"
+                            tiles={['http://localhost:3000/railroads/{z}/{x}/{y}']}
+                        >
+                            <Layer {...railroadsLayer} />
+                        </Source>
+                        <NavigationControl position="top-right" showCompass={true} />
+                    </Map>}
+                    {(selectionCount == 1) && <Map
+                        initialViewState={{
+                            longitude: addresses.find((address) => address.id == selections[0])?.coordinates.coordinates[0],
+                            latitude: addresses.find((address) => address.id == selections[0])?.coordinates.coordinates[1],
+                            zoom: 3
+                        }}
+                        style={{
+                            width: "15%", height: 200, margin: '0 auto'
+                        }}
+                        mapLib={maplibregl}
+                        mapStyle={osmRasterStyle}
+                        dragPan={false}
+                        scrollZoom={false}
+                        boxZoom={false}
+                        doubleClickZoom={false}
+                        touchZoomRotate={false}
+                        keyboard={false}
+                        attributionControl={false}
                     >
-                        <Layer {...runwaysLayer} />
-                        <Layer {...runwaysLabelLayer} />
-                    </Source>
-                    <Source
-                        id="countries"
-                        type="vector"
-                        tiles={['http://localhost:3000/countries/{z}/{x}/{y}']}
-                    >
-                        <Layer {...countriesLayer} />
-                    </Source>
-                    <Source
-                        id="railroads"
-                        type="vector"
-                        tiles={['http://localhost:3000/railroads/{z}/{x}/{y}']}
-                    >
-                        <Layer {...railroadsLayer} />
-                    </Source>
-                    <NavigationControl position="top-right" showCompass={true} />
-                </Map>}
+                        <Source id="my-rect" type="geojson" data={pointGeoJSON}>
+                            <Layer {...pixelCircleStyle} />
+                        </Source>
+                    </Map>}
+                </div>
 
             </Box>
         </div >
